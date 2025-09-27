@@ -8,84 +8,67 @@ import { GameCard } from './components/GameCard';
 import { LoanCard } from './components/LoanCard';
 import { CreateGameModal } from './components/CreateGameModal';
 import { CreateLoanModal } from './components/CreateLoanModal';
+import { WalletConnect } from './components/WalletConnect';
+import { NFTGallery } from './components/NFTGallery';
+import { LendingDashboard } from './components/LendingDashboard';
+import { ReputationBadge } from './components/ReputationBadge';
+import { ErrorBoundary } from './components/ErrorBoundary';
 import { Button } from './components/ui/Button';
 import { VStack, HStack } from './components/ui';
 import { Card } from './components/ui/Card';
-import { Game, Loan, GameStats, LendingStats, UserStats } from '@/lib/types';
+import { Game, Loan, GameStats, LendingStats, UserStats, UserReputation } from '@/lib/types';
+import { useWallet } from '@/hooks/useWallet';
 import { generateGameId, generateLoanId } from '@/lib/utils';
-import { Plus, Gamepad2, TrendingUp, Trophy, Zap } from 'lucide-react';
+import { Plus, Gamepad2, TrendingUp, Trophy, Zap, Ticket, Users } from 'lucide-react';
 
 export default function HomePage() {
+  const { walletInfo, isConnected } = useWallet();
   const [games, setGames] = useState<Game[]>([]);
   const [loans, setLoans] = useState<Loan[]>([]);
+  const [userReputation, setUserReputation] = useState<UserReputation | null>(null);
   const [isCreateGameOpen, setIsCreateGameOpen] = useState(false);
   const [isCreateLoanOpen, setIsCreateLoanOpen] = useState(false);
-  const [activeTab, setActiveTab] = useState<'overview' | 'games' | 'lending'>('overview');
+  const [activeTab, setActiveTab] = useState<'overview' | 'games' | 'lending' | 'nfts'>('overview');
+  const [loading, setLoading] = useState(false);
 
-  // Mock data for demonstration
+  // Load real data from blockchain
   useEffect(() => {
-    // Initialize with sample data
-    const sampleGames: Game[] = [
-      {
-        gameId: 'game_1',
-        type: 'lottery',
-        entryFee: '0.01',
-        startTime: new Date(Date.now() - 3600000),
-        endTime: new Date(Date.now() + 7200000),
-        winningConditions: 'Random draw',
-        createdAt: new Date(),
-        totalPrize: '0.5',
-        participantCount: 25,
-        status: 'active',
-      },
-      {
-        gameId: 'game_2',
-        type: 'raffle',
-        entryFee: '0.005',
-        startTime: new Date(Date.now() + 1800000),
-        endTime: new Date(Date.now() + 10800000),
-        winningConditions: 'First 100 participants',
-        createdAt: new Date(),
-        totalPrize: '0.25',
-        participantCount: 0,
-        status: 'upcoming',
-      },
-    ];
+    if (isConnected && walletInfo?.address) {
+      loadData();
+    }
+  }, [isConnected, walletInfo?.address]);
 
-    const sampleLoans: Loan[] = [
-      {
-        loanId: 'loan_1',
-        lenderWalletAddress: '0x1234567890123456789012345678901234567890',
-        borrowerWalletAddress: '0x0987654321098765432109876543210987654321',
-        principalAmount: '1.0',
-        interestRate: 12,
-        collateralAsset: 'ETH',
-        collateralAmount: '1.5',
-        loanStatus: 'active',
-        createdAt: new Date(),
-        liquidationThreshold: 150,
-        duration: 30,
-        currentValue: '1.5',
-      },
-      {
-        loanId: 'loan_2',
-        lenderWalletAddress: '',
-        borrowerWalletAddress: '0x1111222233334444555566667777888899990000',
-        principalAmount: '0.5',
-        interestRate: 15,
-        collateralAsset: 'ETH',
-        collateralAmount: '0.8',
-        loanStatus: 'pending',
-        createdAt: new Date(),
-        liquidationThreshold: 150,
-        duration: 14,
-        currentValue: '0.8',
-      },
-    ];
+  const loadData = async () => {
+    if (!isConnected || !walletInfo?.address) return;
 
-    setGames(sampleGames);
-    setLoans(sampleLoans);
-  }, []);
+    setLoading(true);
+    try {
+      // Load games
+      const gamesResponse = await fetch(`/api/games?action=active`);
+      if (gamesResponse.ok) {
+        const gamesData = await gamesResponse.json();
+        setGames(gamesData.games || []);
+      }
+
+      // Load user loans
+      const loansResponse = await fetch(`/api/loans?action=user-loans&userAddress=${walletInfo.address}`);
+      if (loansResponse.ok) {
+        const loansData = await loansResponse.json();
+        setLoans(loansData.loans || []);
+      }
+
+      // Load user reputation
+      const reputationResponse = await fetch(`/api/user?action=reputation&address=${walletInfo.address}`);
+      if (reputationResponse.ok) {
+        const reputationData = await reputationResponse.json();
+        setUserReputation(reputationData.reputation);
+      }
+    } catch (error) {
+      console.error('Failed to load data:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const gameStats: GameStats = {
     totalGames: games.length,
@@ -167,31 +150,46 @@ export default function HomePage() {
     { id: 'overview', label: 'Overview', icon: Trophy },
     { id: 'games', label: 'Games', icon: Gamepad2 },
     { id: 'lending', label: 'Lending', icon: TrendingUp },
+    { id: 'nfts', label: 'My NFTs', icon: Ticket },
   ];
 
   return (
-    <AppShell variant="glass">
-      <Navigation />
-      
-      {/* Tab Navigation */}
-      <div className="mb-8">
-        <div className="flex space-x-1 bg-surface/50 p-1 rounded-lg">
-          {tabs.map((tab) => (
-            <button
-              key={tab.id}
-              onClick={() => setActiveTab(tab.id as any)}
-              className={`flex items-center gap-2 px-4 py-2 rounded-md transition-all duration-200 ${
-                activeTab === tab.id
-                  ? 'bg-accent text-bg font-medium'
-                  : 'text-muted hover:text-fg hover:bg-surface/50'
-              }`}
-            >
-              <tab.icon className="w-4 h-4" />
-              {tab.label}
-            </button>
-          ))}
+    <ErrorBoundary>
+      <AppShell variant="glass">
+        <Navigation />
+
+        {/* Wallet Connection & Reputation */}
+        <div className="mb-6 flex items-center justify-between">
+          <div className="flex items-center gap-4">
+            <WalletConnect />
+            {userReputation && (
+              <ReputationBadge reputation={userReputation} size="sm" />
+            )}
+          </div>
+          {loading && (
+            <div className="text-sm text-muted">Loading...</div>
+          )}
         </div>
-      </div>
+
+        {/* Tab Navigation */}
+        <div className="mb-8">
+          <div className="flex space-x-1 bg-surface/50 p-1 rounded-lg">
+            {tabs.map((tab) => (
+              <button
+                key={tab.id}
+                onClick={() => setActiveTab(tab.id as any)}
+                className={`flex items-center gap-2 px-4 py-2 rounded-md transition-all duration-200 ${
+                  activeTab === tab.id
+                    ? 'bg-accent text-bg font-medium'
+                    : 'text-muted hover:text-fg hover:bg-surface/50'
+                }`}
+              >
+                <tab.icon className="w-4 h-4" />
+                {tab.label}
+              </button>
+            ))}
+          </div>
+        </div>
 
       {/* Content */}
       {activeTab === 'overview' && (
@@ -304,31 +302,11 @@ export default function HomePage() {
       )}
 
       {activeTab === 'lending' && (
-        <VStack spacing="lg">
-          <HStack justify="between">
-            <div>
-              <h1 className="text-3xl font-bold gradient-text">Lending Marketplace</h1>
-              <p className="text-muted">Secure P2P lending with smart contract collateral</p>
-            </div>
-            <Button
-              onClick={() => setIsCreateLoanOpen(true)}
-              className="flex items-center gap-2"
-            >
-              <Plus className="w-4 h-4" />
-              Request Loan
-            </Button>
-          </HStack>
+        <LendingDashboard contractAddress={process.env.NEXT_PUBLIC_LENDING_CONTRACT_ADDRESS} />
+      )}
 
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-            {loans.map((loan) => (
-              <LoanCard
-                key={loan.loanId}
-                loan={loan}
-                onAction={handleLoanAction}
-              />
-            ))}
-          </div>
-        </VStack>
+      {activeTab === 'nfts' && (
+        <NFTGallery contractAddress={process.env.NEXT_PUBLIC_NFT_CONTRACT_ADDRESS} />
       )}
 
       {/* Floating Action Button */}
@@ -349,5 +327,6 @@ export default function HomePage() {
         onCreate={handleCreateLoan}
       />
     </AppShell>
+    </ErrorBoundary>
   );
 }

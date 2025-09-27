@@ -6,7 +6,11 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "contracts:compile": "cd contracts && hardhat compile",
+    "contracts:deploy": "cd contracts && hardhat run scripts/deploy.js --network base",
+    "contracts:test": "cd contracts && hardhat test",
+    "postinstall": "cd contracts && npm install"
   },
   "dependencies": {
     "@coinbase/onchainkit": "^0.38.19",
