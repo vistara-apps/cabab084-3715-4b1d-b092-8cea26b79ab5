@@ -1,0 +1,129 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  /* Professional Finance Theme - Wall Street meets Crypto */
+  --color-bg: #0a1628;
+  --color-fg: #f8fafc;
+  --color-accent: #ffd700;
+  --color-primary: #1e40af;
+  --color-surface: #1e293b;
+  --color-border: #334155;
+  --color-muted: #64748b;
+}
+
+[data-theme="celo"] {
+  --color-bg: #000000;
+  --color-fg: #ffffff;
+  --color-accent: #fbcc5c;
+  --color-primary: #fbcc5c;
+  --color-surface: #1a1a1a;
+  --color-border: #333333;
+  --color-muted: #666666;
+}
+
+[data-theme="solana"] {
+  --color-bg: #1a0d2e;
+  --color-fg: #ffffff;
+  --color-accent: #9945ff;
+  --color-primary: #14f195;
+  --color-surface: #2d1b4e;
+  --color-border: #4c2a85;
+  --color-muted: #8b5cf6;
+}
+
+[data-theme="base"] {
+  --color-bg: #0f172a;
+  --color-fg: #f1f5f9;
+  --color-accent: #0052ff;
+  --color-primary: #0052ff;
+  --color-surface: #1e293b;
+  --color-border: #334155;
+  --color-muted: #64748b;
+}
+
+[data-theme="coinbase"] {
+  --color-bg: #0c1426;
+  --color-fg: #f1f5f9;
+  --color-accent: #0052ff;
+  --color-primary: #0052ff;
+  --color-surface: #1e293b;
+  --color-border: #334155;
+  --color-muted: #64748b;
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  
+  body {
+    @apply bg-bg text-fg font-sans antialiased;
+    font-feature-settings: "rlig" 1, "calt" 1;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    @apply text-fg font-semibold;
+  }
+}
+
+@layer components {
+  .glass-card {
+    @apply bg-surface/80 backdrop-blur-sm border border-border/50 rounded-xl;
+  }
+
+  .btn-primary {
+    @apply bg-gradient-to-r from-accent to-yellow-500 text-bg px-6 py-3 rounded-lg font-semibold hover:from-yellow-500 hover:to-accent transition-all duration-200 shadow-lg hover:shadow-xl;
+  }
+
+  .btn-secondary {
+    @apply bg-surface border border-border text-fg px-6 py-3 rounded-lg font-medium hover:bg-surface/80 transition-all duration-200;
+  }
+
+  .btn-outline {
+    @apply border border-accent text-accent px-6 py-3 rounded-lg font-medium hover:bg-accent hover:text-bg transition-all duration-200;
+  }
+
+  .input-field {
+    @apply bg-surface border border-border rounded-lg px-4 py-3 text-fg placeholder-muted focus:border-accent focus:ring-2 focus:ring-accent/20 transition-all duration-200;
+  }
+
+  .metric-card {
+    @apply glass-card p-6 hover:bg-surface/90 transition-all duration-200;
+  }
+
+  .game-card {
+    @apply glass-card p-6 hover:border-accent/50 transition-all duration-200 cursor-pointer;
+  }
+
+  .loan-card {
+    @apply glass-card p-6 border-l-4 border-l-accent hover:bg-surface/90 transition-all duration-200;
+  }
+
+  .status-active {
+    @apply bg-green-500/20 text-green-400 px-3 py-1 rounded-full text-sm font-medium;
+  }
+
+  .status-pending {
+    @apply bg-yellow-500/20 text-yellow-400 px-3 py-1 rounded-full text-sm font-medium;
+  }
+
+  .status-completed {
+    @apply bg-blue-500/20 text-blue-400 px-3 py-1 rounded-full text-sm font-medium;
+  }
+
+  .gradient-text {
+    @apply bg-gradient-to-r from-accent to-yellow-500 bg-clip-text text-transparent;
+  }
+
+  .floating-action {
+    @apply fixed bottom-6 right-6 bg-accent text-bg p-4 rounded-full shadow-lg hover:shadow-xl transition-all duration-200 animate-pulse-gold;
+  }
+}
+
+@layer utilities {
+  .text-balance {
+    text-wrap: balance;
+  }
+}
