@@ -1,0 +1,30 @@
+{
+  "accountAssociation": {
+    "header": "",
+    "payload": "",
+    "signature": ""
+  },
+  "frame": {
+    "version": "1",
+    "name": "FairPlay Nexus",
+    "subtitle": "Built with Zara",
+    "description": "FairPlay Nexus is a Base Mini App built with Zara.",
+    "iconUrl": "https://0co.to/images/zara-2.png",
+    "homeUrl": "https://cabab08437154b1db0928cea26b79ab5-lpmt.vercel.app",
+    "splashImageUrl": "https://cabab08437154b1db0928cea26b79ab5-lpmt.vercel.app/splash.png",
+    "splashBackgroundColor": "#000000",
+    "heroImageUrl": "https://cabab08437154b1db0928cea26b79ab5-lpmt.vercel.app/image.png",
+    "tagline": "FairPlay Nexus",
+    "screenshotUrls": [
+      "https://cabab08437154b1db0928cea26b79ab5-lpmt.vercel.app/screenshot.png",
+      "https://cabab08437154b1db0928cea26b79ab5-lpmt.vercel.app/screenshot.png"
+    ],
+    "primaryCategory": "social",
+    "tags": [
+      "base",
+      "miniapp",
+      "onchainkit"
+    ],
+    "webhookUrl": "https://cabab08437154b1db0928cea26b79ab5-lpmt.vercel.app/api/webhook"
+  }
+}

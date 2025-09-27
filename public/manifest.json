@@ -1,0 +1,14 @@
+{
+  "name": "FairPlay Nexus",
+  "description": "FairPlay Nexus is a Base Mini App built with Zara.",
+  "image": "https://dummyimage.com/1200x628/0a0b0d/ffffff.png&text=OG",
+  "external_url": "https://cabab084-3715-4b1d-b092-8cea26b79ab5.vercel.app",
+  "properties": {
+    "app": {
+      "name": "FairPlay Nexus",
+      "description": "FairPlay Nexus is a Base Mini App built with Zara.",
+      "url": "https://cabab084-3715-4b1d-b092-8cea26b79ab5.vercel.app",
+      "icon": "https://0co.to/images/zara-2.png"
+    }
+  }
+}
